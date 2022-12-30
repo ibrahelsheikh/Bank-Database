@@ -128,14 +128,6 @@ begin
 	insert into customar values(@ssn, @name, @address, @employee_ssn)
 
 	execute new_account @ssn, @account_type
-	/*insert into account (owner_ssn) values (@ssn)
-
-	set @account_number = (select number from  account where owner_ssn = @ssn)
-
-	if (@account_type = 's')
-	insert into saving_account (number) values (@account_number)
-	else
-	insert into checking_account (number) values (@account_number)*/
 end
 
 
