@@ -36,18 +36,21 @@ create table dependent(
 create table account(
 	number int primary key identity(1,1),
 	balance float default 0,
-	owner_ssn char(9) foreign key references customar(ssn)
+	owner_ssn char(9),
+	foreign key(owner_ssn) references customar(ssn) on delete cascade
 	)
 
 
 create table saving_account(
-	number int foreign key references account(number),
-	interest_rate float 
+	number int  not null,
+	interest_rate float default 0.05,
+	foreign key(number) references account(number) on delete cascade
 	)
-
+	
 create table checking_account(
-	number int foreign key references account(number),
-	overdraft_amount float default 500
+	number int not null,
+	overdraft_amount float default 500,
+	foreign key(number) references account(number) on delete cascade
 	)
 
 create table branch(
@@ -77,7 +80,7 @@ create table trans(
 	date date,
 	type char not null,
 	amount float not null
-	)
+	) 
 
 
 
@@ -89,45 +92,60 @@ values (780924598, 'Saad Eldaly', 01111111111, '2001-02-13', null),
 	(222222222, 'Johnny depp', 01040500000, '2002-02-12', 780924598),
 	(333333333, 'Soaad Hosny', 01040000000, '2015-03-01', 780924598)
 
-/* create trigger to make account for the new customars */
-create trigger new_account
-on customar after insert
+
+/* create function to make the account for existing customar*/
+create procedure new_account
+@ssn char(9),
+@type char
 as
-	begin
-		declare @ssn char(9);
-		select @ssn = e.ssn from inserted e;
-		insert into account(owner_ssn) values (@ssn)
-	end
+begin
+	insert into account (owner_ssn) values (@ssn)
+	
+	declare @account_number int
 
-drop trigger new_account
+	set @account_number = (select max(number) from  account where owner_ssn = @ssn)
+	if (@type = 's')
+	insert into saving_account (number) values (@account_number)
+	else
+	insert into checking_account (number) values (@account_number)
+end
+
+
+
+/* Create procedure to add a new customar "Our rules says any customar must have an account" */
+/*  1. Add the customar data 
+	2. Add the customar account
+	3. Choose the type of the account */
+create procedure add_new_customar 
+@ssn char(9),
+@name varchar(20),
+@address varchar(30),
+@employee_ssn char(9),
+@account_type char
+as
+begin
+	declare @account_number int
+	insert into customar values(@ssn, @name, @address, @employee_ssn)
+
+	execute new_account @ssn, @account_type
+	/*insert into account (owner_ssn) values (@ssn)
+
+	set @account_number = (select number from  account where owner_ssn = @ssn)
+
+	if (@account_type = 's')
+	insert into saving_account (number) values (@account_number)
+	else
+	insert into checking_account (number) values (@account_number)*/
+end
+
+
+execute add_new_customar 910758468, 'Thomas Shelby', 'England', 333333333, 'c';
+execute add_new_customar 444444444, 'Mohamed Abohend', 'Gharbia', 780924598, 's';
+execute add_new_customar 555555555, 'Mohamed Elshorbagy', 'Menofia', 193702892, 'c';
+execute add_new_customar 666666666, 'Ebrahim', 'Alexandria', 193702892, 's';
+execute add_new_customar 999999999, 'Mohamed Elsha7at', 'Marsa Matro7', 222222222, 'c';
+execute add_new_customar 123456789, 'Mohamed Konsowa', 'El3lmeen', 333333333, 's';
+execute new_account 910758468, 's'
+
 delete customar
-delete account
-select * from account
 
-/* insert customars with new accounts */
-insert into customar
-values (444444444, 'Mohamed Abohend', 'Gharbia', 780924598);
-insert into customar
-values(555555555, 'Mohamed Elshorbagy', 'Menofia', 193702892);
-insert into customar
-values(666666666, 'Ebrahim', 'Alexandria', 193702892);
-insert into customar
-values(999999999, 'Mohamed Elsha7at', 'Marsa Matro7', 222222222);
-insert into customar
-values(123456789, 'Mohamed Konsowa', 'El3lmeen', 333333333);
-
-
-/* create accounts as saving accounts or checking accounts */
-insert into saving_account
-values
-
-
-create trigger deposite
-	on account after insert
-	as
-	begin
-		/* if the account is saving account */
-		/* insert into the interest account upon on saving account */
-		/* else (the account is checking account */
-		/* deal with it */
-	end
