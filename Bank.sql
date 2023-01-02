@@ -139,5 +139,91 @@ execute add_new_customar 999999999, 'Mohamed Elsha7at', 'Marsa Matro7', 22222222
 execute add_new_customar 123456789, 'Mohamed Konsowa', 'El3lmeen', 333333333, 's';
 execute new_account 910758468, 's'
 
-delete customar
+--delete customar
 
+
+-- changing dateformat:
+set dateformat dmy
+
+
+
+-- trigger to decrease the branch-cash when applying new loan from that branch
+
+create trigger branch_cash
+on loan after insert 
+as
+begin
+update branch 
+set available_cash = available_cash - loan.amount
+FROM loan
+end
+
+
+insert into branch values('tanta','tanta',5000)
+update branch set available_cash = 50000 where name = 'tanta'
+insert into loan (amount,customar_ssn,branch_name,borrow_date)values(2000,'123456789','tanta','25/1/2011')
+
+select * from loan
+select * from branch
+
+ ---------------------------------------------------------------
+
+
+
+--drop trigger update_balance_on_transaction
+
+
+
+-- trigger to update balance on transaction
+
+
+
+CREATE TRIGGER update_balance_on_transaction
+ON trans
+AFTER INSERT
+AS
+BEGIN
+  IF EXISTS (SELECT 1 FROM inserted WHERE [type] = 'd')
+  BEGIN
+    UPDATE a
+    SET a.balance = a.balance + t.amount
+    FROM account a , trans t
+	where a.number = t.account_no
+   -- INNER JOIN inserted i ON a.number = i.account_no
+  END
+  ELSE IF EXISTS (SELECT 1 FROM inserted WHERE [type] = 'w')
+  BEGIN
+    UPDATE a
+    SET a.balance = a.balance - t.amount
+    FROM account a , trans t
+	where a.number = t.account_no
+   -- INNER JOIN inserted i ON a.number = i.account_no
+  END
+END
+
+
+
+update account 
+set balance = 5000 
+where owner_ssn =  '444444444'
+
+insert into trans values('444444444',2,'25/1/2011','w',500)
+
+select * from account
+select * from trans
+
+-- trigger to decrease the amount of loan after payment
+
+CREATE TRIGGER update_loan_amount
+on payment 
+after insert
+as
+BEGIN
+   UPDATE loan
+   SET amount = l.amount - p.amount
+   from payment p, loan l
+   WHERE l.number = p.loan_no;
+END
+
+insert into payment (loan_no, amount,date)values(16,500,'27/1/2011')
+select * from loan
