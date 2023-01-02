@@ -177,13 +177,6 @@ set dateformat dmy;
             from trans
 
 
-/* Insert employees data */
-            insert into employee
-            values (780924598, 'Saad Eldaly', 01111111111, '2001-02-13', null),
-                   (193702892, 'Johnny depp', 01000000000, '2002-02-12', 780924598),
-                   (11111111, 'Adel Shakal', 01113111111, '2010-12-13', 193702892),
-                   (222222222, 'Johnny depp', 01040500000, '2002-02-12', 780924598),
-                   (333333333, 'Soaad Hosny', 01040000000, '2015-03-01', 780924598)
 
 /* Create procedure to add a new customar "Our rules says any customar must have an account" */
 /*  1. Add the customar data
@@ -211,5 +204,4 @@ set dateformat dmy;
                 execute add_new_customar 123456789, 'Mohamed Konsowa', 'El3lmeen', 333333333, 's';
                 execute new_account 910758468, 's'
 
---delete customar
 
