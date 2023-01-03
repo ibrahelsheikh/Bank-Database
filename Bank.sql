@@ -10,7 +10,7 @@ CREATE TABLE employee (
 	start_date date NOT NULL,
 	manager_ssn CHAR(9)
 	)
-	
+
 /*  modifing unique value constraint */
 alter table employee add unique (phone_num)
 
