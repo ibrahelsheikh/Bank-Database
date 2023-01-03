@@ -10,7 +10,7 @@ CREATE TABLE employee (
 	start_date date NOT NULL,
 	manager_ssn CHAR(9)
 	)
-	
+
 /*  modifing unique value constraint */
 alter table employee add unique (phone_num)
 
@@ -81,7 +81,7 @@ create table trans(
 	type char not null,
 	amount float not null
 	) 
-
+go
 
 
 /* add Backup */
@@ -102,7 +102,7 @@ values (780924598, 'Saad Eldaly', 01111111111, '2001-02-13', null),
 	(222222222, 'Johnny depp', 01040500000, '2002-02-12', 780924598),
 	(333333333, 'Soaad Hosny', 01040000000, '2015-03-01', 780924598)
 
-
+go
 /* create function to make the account for existing customar*/
 create procedure new_account
 @ssn char(9),
@@ -121,7 +121,7 @@ begin
 end
 
 
-
+go
 /* Create procedure to add a new customar "Our rules says any customar must have an account" */
 /*  1. Add the customar data 
 	2. Add the customar account
@@ -156,7 +156,7 @@ execute new_account 910758468, 's'
 set dateformat dmy
 
 
-
+go
 -- trigger to decrease the branch-cash when applying new loan from that branch
 
 create trigger branch_cash
@@ -187,7 +187,7 @@ select * from branch
 -- trigger to update balance on transaction
 
 
-
+go
 CREATE TRIGGER update_balance_on_transaction
 ON trans
 AFTER INSERT
@@ -223,7 +223,7 @@ select * from account
 select * from trans
 
 -- trigger to decrease the amount of loan after payment
-
+go
 CREATE TRIGGER update_loan_amount
 on payment 
 after insert
