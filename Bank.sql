@@ -46,7 +46,7 @@ create table saving_account(
 	interest_rate float default 0.05,
 	foreign key(number) references account(number) on delete cascade
 	)
-	
+
 create table checking_account(
 	number int not null,
 	overdraft_amount float default 500,
@@ -68,7 +68,7 @@ create table loan(
 	)
 
 create table payment(
-	number int primary key identity(1,1), 
+	number int primary key identity(1,1),
 	loan_no int not null foreign key references loan(number),
 	amount float not null,
 	date date
@@ -80,22 +80,12 @@ create table trans(
 	date date,
 	type char not null,
 	amount float not null
-	) 
-go
-
-
-/* add Backup */
-BACKUP DATABASE [MyBank] TO  DISK = N'C:\Program Files\Microsoft SQL Server\MSSQL11.SQLEXPRESS\MSSQL\Backup\MyBank.bak' WITH NOFORMAT, NOINIT,  NAME = N'MyBank-Full Database Backup', SKIP, NOREWIND, NOUNLOAD,  STATS = 10
-GO
--- TODO : change path to your backup path
-
-
-
+	)
 
 
 
 /* Insert employees data */
-insert into employee 
+insert into employee
 values (780924598, 'Saad Eldaly', 01111111111, '2001-02-13', null),
 	(193702892, 'Johnny depp', 01000000000, '2002-02-12', 780924598),
 	(11111111, 'Adel Shakal', 01113111111, '2010-12-13', 193702892),
@@ -110,7 +100,7 @@ create procedure new_account
 as
 begin
 	insert into account (owner_ssn) values (@ssn)
-	
+
 	declare @account_number int
 
 	set @account_number = (select max(number) from  account where owner_ssn = @ssn)
@@ -121,12 +111,13 @@ begin
 end
 
 
-go
+
 /* Create procedure to add a new customar "Our rules says any customar must have an account" */
-/*  1. Add the customar data 
+/*  1. Add the customar data
 	2. Add the customar account
 	3. Choose the type of the account */
-create procedure add_new_customar 
+go
+    create procedure add_new_customar
 @ssn char(9),
 @name varchar(20),
 @address varchar(30),
@@ -156,22 +147,22 @@ execute new_account 910758468, 's'
 set dateformat dmy
 
 
-go
--- trigger to decrease the branch-cash when applying new loan from that branch
 
+-- trigger to decrease the branch-cash when applying new loan from that branch
+go
 create trigger branch_cash
-on loan after insert 
+on loan after insert
 as
 begin
-update branch 
+update branch
 set available_cash = available_cash - loan.amount
-FROM loan
+FROM loan
 end
 
 
 insert into branch values('tanta','tanta',5000)
 update branch set available_cash = 50000 where name = 'tanta'
-insert into loan (amount,customar_ssn,branch_name,borrow_date)values(2000,'123456789','tanta','25/1/2011')
+insert into loan (number ,amount,customar_ssn,branch_name,borrow_date)values(2000,'123456789','tanta','25/1/2011')
 
 select * from loan
 select * from branch
@@ -213,8 +204,8 @@ END
 
 
 
-update account 
-set balance = 5000 
+update account
+set balance = 5000
 where owner_ssn =  '444444444'
 
 insert into trans values('444444444',2,'25/1/2011','w',500)
@@ -225,7 +216,7 @@ select * from trans
 -- trigger to decrease the amount of loan after payment
 go
 CREATE TRIGGER update_loan_amount
-on payment 
+on payment
 after insert
 as
 BEGIN
