@@ -84,6 +84,16 @@ create table trans(
 
 
 
+/* add Backup */
+BACKUP DATABASE [MyBank] TO  DISK = N'C:\Program Files\Microsoft SQL Server\MSSQL11.SQLEXPRESS\MSSQL\Backup\MyBank.bak' WITH NOFORMAT, NOINIT,  NAME = N'MyBank-Full Database Backup', SKIP, NOREWIND, NOUNLOAD,  STATS = 10
+GO
+-- TODO : change path to your backup path
+
+
+
+
+
+
 /* Insert employees data */
 insert into employee 
 values (780924598, 'Saad Eldaly', 01111111111, '2001-02-13', null),
