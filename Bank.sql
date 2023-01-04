@@ -246,7 +246,12 @@ insert into loan (amount, customer_ssn, branch_name, borrow_date)
 values (10000, '123456789', 'hekma', '25/1/2011'),
        (50000, '678432109', 'hekma', '25/1/2022'),
 	   (500000, '567865558', 'nozha', '25/2/2022')
+	   
 
+insert into payment (loan_no, amount, date)
+values (1, 500, '25/1/2012'),
+       (2, 2500,'29/7/2022'),
+	   (3, 25000,'30/9/2022')
 
 
 
