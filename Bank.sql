@@ -19,7 +19,7 @@ alter table employee add unique (phone_num)
 ALTER TABLE employee
 ADD FOREIGN KEY (manager_ssn) REFERENCES employee(ssn);
 
-create table customar(
+create table customer(
 	ssn char(9) primary key,
 	name varchar(20) not null,
 	address varchar(30),
@@ -38,7 +38,7 @@ create table account(
 	number int primary key identity(1,1),
 	balance float default 0,
 	owner_ssn char(9),
-	foreign key(owner_ssn) references customar(ssn) on delete cascade
+	foreign key(owner_ssn) references customer(ssn) on delete cascade
 	)
 
 
@@ -63,7 +63,7 @@ create table branch(
 create table loan(
 	number int primary key identity(1,1),
 	amount float not null,
-	customar_ssn char(9) foreign key references customar(ssn),
+	customar_ssn char(9) foreign key references customer(ssn),
 	branch_name varchar(10) foreign key references branch(name),
 	borrow_date date
 	)
@@ -76,7 +76,7 @@ create table payment(
 	)
 
 create table trans(
-	customar_ssn char(9) not null foreign key references customar(ssn),
+	customar_ssn char(9) not null foreign key references customer(ssn),
 	account_no int not null foreign key references account(number),
 	date date,
 	type char not null,
@@ -127,7 +127,7 @@ go
 as
 begin
 	declare @account_number int
-	insert into customar values(@ssn, @name, @address, @employee_ssn)
+	insert into customer values(@ssn, @name, @address, @employee_ssn)
 
 	execute new_account @ssn, @account_type
 end
@@ -160,7 +160,7 @@ set available_cash = available_cash - loan.amount
 FROM loan
 end
 go
-insert into customar values('123456789','mohamed','16 helw st','11111111')
+insert into customer values('123456789','mohamed','16 helw st','11111111')
 insert into branch values('tanta','tanta',5000)
 update branch set available_cash = 50000 where name = 'tanta'
 insert into loan (amount,customar_ssn,branch_name,borrow_date)values(2000,'123456789','tanta','25/1/2011')
@@ -231,6 +231,72 @@ END
 go
 insert into payment (loan_no, amount,date)values(1,500,'27/1/2011')
 --select * from loan
+
+
+
+
+
+go
+-- views customer data
+CREATE VIEW customer_data AS
+SELECT c.name, c.address, c.employee_ssn, c.ssn, acc.number, acc.balance
+FROM customer c
+INNER JOIN account acc ON c.ssn = acc.owner_ssn;
+
+-- call the view
+SELECT * FROM customer_data;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--Find the total number of loans granted by a specific branch:
+
+SELECT COUNT(*)
+FROM loan
+WHERE branch_name = 'Downtown';
+
+--Find the average balance for all saving accounts:
+SELECT count(a.balance)
+FROM saving_account sa
+INNER JOIN account a ON sa.number = a.number;
+
+--Find the average balance for all saving accounts:
+SELECT AVG(a.balance)
+FROM saving_account sa
+INNER JOIN account a ON sa.number = a.number;
+
+--Find the names and phone numbers of all employees who have dependents:
+SELECT e.name, e.phone_num
+FROM employee e
+INNER JOIN dependent d ON e.ssn = d.employee_ssn
+GROUP BY e.name, e.phone_num;
+
+--Find the total amount of payments made on each loan:
+SELECT l.number, SUM(p.amount) AS total_payments
+FROM loan l
+INNER JOIN payment p ON l.number = p.loan_no
+GROUP BY l.number;
+--Find the total number of transactions made by each customer, along with the customer's name:
+SELECT c.name, COUNT(t.customar_ssn) AS total_transactions
+FROM trans t
+INNER JOIN customer c ON t.customar_ssn = c.ssn
+GROUP BY c.name;
+
+
+
+
 
 
 
