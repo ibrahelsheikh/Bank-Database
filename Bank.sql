@@ -165,10 +165,10 @@ insert into branch values('tanta','tanta',5000)
 update branch set available_cash = 50000 where name = 'tanta'
 insert into loan (amount,customar_ssn,branch_name,borrow_date)values(2000,'123456789','tanta','25/1/2011')
 
-select * from loan
-select * from branch
-select * from customar
-select * from employee
+--select * from loan
+--select * from branch
+--select * from customar
+--select * from employee
 
  ---------------------------------------------------------------
 
@@ -213,8 +213,8 @@ where owner_ssn =  '444444444'
 
 insert into trans values('444444444',2,'25/1/2011','w',500)
 
-select * from account
-select * from trans
+--select * from account
+--select * from trans
 
 -- trigger to decrease the amount of loan after payment
 go
@@ -230,4 +230,7 @@ BEGIN
 END
 go
 insert into payment (loan_no, amount,date)values(1,500,'27/1/2011')
-select * from loan
+--select * from loan
+
+
+
