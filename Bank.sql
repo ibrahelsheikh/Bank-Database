@@ -1,3 +1,4 @@
+
 create database MyBank
 go
 
@@ -82,7 +83,7 @@ create table trans(
 	amount float not null
 	)
 
-
+	
 
 /* Insert employees data */
 insert into employee
@@ -130,7 +131,7 @@ begin
 
 	execute new_account @ssn, @account_type
 end
-
+go
 
 execute add_new_customar 910758468, 'Thomas Shelby', 'England', 333333333, 'c';
 execute add_new_customar 444444444, 'Mohamed Abohend', 'Gharbia', 780924598, 's';
@@ -158,20 +159,22 @@ update branch
 set available_cash = available_cash - loan.amount
 FROM loan
 end
-
-
+go
+insert into customar values('123456789','mohamed','16 helw st','11111111')
 insert into branch values('tanta','tanta',5000)
 update branch set available_cash = 50000 where name = 'tanta'
-insert into loan (number ,amount,customar_ssn,branch_name,borrow_date)values(2000,'123456789','tanta','25/1/2011')
+insert into loan (amount,customar_ssn,branch_name,borrow_date)values(2000,'123456789','tanta','25/1/2011')
 
 select * from loan
 select * from branch
+select * from customar
+select * from employee
 
  ---------------------------------------------------------------
 
 
 
---drop trigger update_balance_on_transaction
+
 
 
 
@@ -203,7 +206,7 @@ BEGIN
 END
 
 
-
+go
 update account
 set balance = 5000
 where owner_ssn =  '444444444'
@@ -225,6 +228,6 @@ BEGIN
    from payment p, loan l
    WHERE l.number = p.loan_no;
 END
-
-insert into payment (loan_no, amount,date)values(16,500,'27/1/2011')
+go
+insert into payment (loan_no, amount,date)values(1,500,'27/1/2011')
 select * from loan
